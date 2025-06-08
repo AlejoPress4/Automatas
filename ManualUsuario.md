@@ -213,7 +213,18 @@ Si tienes problemas o preguntas:
 
 ---
 
+## 👥 Créditos
+
+**Desarrollado por:**
+- **Mariana García** 👩‍💻
+- **Alejandro Preciado** 👨‍💻
+
+*Estudiantes de Ingeniería de Sistemas y Computación*  
+**Universidad de Caldas** - Manizales, Colombia 🇨🇴
+
+---
+
 **🎓 Proyecto Académico - Autómatas y Lenguajes Formales**  
-*Universidad - Validador AFD con interfaz web moderna*
+*Universidad de Caldas - Validador AFD con interfaz web moderna*
 
 ¡Disfruta explorando el mundo de los autómatas finitos! 🚀

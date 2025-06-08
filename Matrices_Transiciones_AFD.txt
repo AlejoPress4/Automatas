@@ -1,0 +1,230 @@
+═══════════════════════════════════════════════════════════════════════════════════
+🤖 DEFINICIÓN FORMAL DE AUTÓMATAS FINITOS DETERMINISTAS (AFD)
+═══════════════════════════════════════════════════════════════════════════════════
+
+📅 Fecha: 8 de Junio, 2025
+🎓 Proyecto: Validadores IPv4 y Placas Vehiculares
+👩‍💻 Implementación: JavaScript para Live Server
+
+═══════════════════════════════════════════════════════════════════════════════════
+🌐 AFD PARA VALIDACIÓN DE DIRECCIONES IPv4
+═══════════════════════════════════════════════════════════════════════════════════
+
+📋 DEFINICIÓN FORMAL DEL AFD IPv4:
+
+AFD_IPv4 = (Σ, Q, q0, F, δ)
+
+Donde:
+• Σ = {'0','1','2','3','4','5','6','7','8','9','.'} (Alfabeto de entrada)
+• Q = {q0, q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12, q13, q14, q15, q16, qR} (Estados)
+• q0 = START (Estado inicial)
+• F = {q13, q14, q15} (Estados finales válidos)
+• δ = Función de transición (ver matriz abajo)
+
+🏷️ MAPEO DE ESTADOS:
+q0  = START      (Estado inicial)
+q1  = DIGIT1_1   (Primer dígito del primer octeto)
+q2  = DIGIT1_2   (Segundo dígito del primer octeto)  
+q3  = DIGIT1_3   (Tercer dígito del primer octeto)
+q4  = DOT1       (Primer punto procesado)
+q5  = DIGIT2_1   (Primer dígito del segundo octeto)
+q6  = DIGIT2_2   (Segundo dígito del segundo octeto)
+q7  = DIGIT2_3   (Tercer dígito del segundo octeto)
+q8  = DOT2       (Segundo punto procesado)
+q9  = DIGIT3_1   (Primer dígito del tercer octeto)
+q10 = DIGIT3_2   (Segundo dígito del tercer octeto)
+q11 = DIGIT3_3   (Tercer dígito del tercer octeto)
+q12 = DOT3       (Tercer punto procesado)
+q13 = DIGIT4_1   (Primer dígito del cuarto octeto) ★ FINAL
+q14 = DIGIT4_2   (Segundo dígito del cuarto octeto) ★ FINAL
+q15 = DIGIT4_3   (Tercer dígito del cuarto octeto) ★ FINAL
+qR  = REJECT     (Estado de rechazo)
+
+📊 MATRIZ DE TRANSICIONES δ(estado, símbolo):
+
+Estado\Entrada  |  0  |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  .  | otro
+================|=====|=====|=====|=====|=====|=====|=====|=====|=====|=====|=====|=====
+q0 (START)      | q1  | q1  | q1  | q1  | q1  | q1  | q1  | q1  | q1  | q1  | qR  | qR
+q1 (DIGIT1_1)   | q2* | q2  | q2  | q2  | q2  | q2  | q2  | q2  | q2  | q2  | q4* | qR
+q2 (DIGIT1_2)   | q3  | q3  | q3  | q3  | q3  | q3  | q3  | q3  | q3  | q3  | q4* | qR
+q3 (DIGIT1_3)   | qR  | qR  | qR  | qR  | qR  | qR  | qR  | qR  | qR  | qR  | q4* | qR
+q4 (DOT1)       | q5  | q5  | q5  | q5  | q5  | q5  | q5  | q5  | q5  | q5  | qR  | qR
+q5 (DIGIT2_1)   | q6* | q6  | q6  | q6  | q6  | q6  | q6  | q6  | q6  | q6  | q8* | qR
+q6 (DIGIT2_2)   | q7  | q7  | q7  | q7  | q7  | q7  | q7  | q7  | q7  | q7  | q8* | qR
+q7 (DIGIT2_3)   | qR  | qR  | qR  | qR  | qR  | qR  | qR  | qR  | qR  | qR  | q8* | qR
+q8 (DOT2)       | q9  | q9  | q9  | q9  | q9  | q9  | q9  | q9  | q9  | q9  | qR  | qR
+q9 (DIGIT3_1)   | q10*| q10 | q10 | q10 | q10 | q10 | q10 | q10 | q10 | q10 | q12*| qR
+q10 (DIGIT3_2)  | q11 | q11 | q11 | q11 | q11 | q11 | q11 | q11 | q11 | q11 | q12*| qR
+q11 (DIGIT3_3)  | qR  | qR  | qR  | qR  | qR  | qR  | qR  | qR  | qR  | qR  | q12*| qR
+q12 (DOT3)      | q13 | q13 | q13 | q13 | q13 | q13 | q13 | q13 | q13 | q13 | qR  | qR
+q13 (DIGIT4_1)  | q14*| q14 | q14 | q14 | q14 | q14 | q14 | q14 | q14 | q14 | qR  | qR
+q14 (DIGIT4_2)  | q15 | q15 | q15 | q15 | q15 | q15 | q15 | q15 | q15 | q15 | qR  | qR
+q15 (DIGIT4_3)  | qR  | qR  | qR  | qR  | qR  | qR  | qR  | qR  | qR  | qR  | qR  | qR
+qR (REJECT)     | qR  | qR  | qR  | qR  | qR  | qR  | qR  | qR  | qR  | qR  | qR  | qR
+
+📝 NOTAS IMPORTANTES:
+* = Transición condicionada a validación de rango (0-255) y sin ceros a la izquierda
+★ = Estados de aceptación (F)
+
+🔍 VALIDACIONES ESPECIALES:
+- Transiciones marcadas con * requieren validación adicional del número formado
+- No se acepta "01", "02", etc. (ceros a la izquierda), excepto "0" solo
+- Cada octeto debe estar en rango [0, 255]
+- Estados q13, q14, q15 son finales solo si el último número es válido
+
+═══════════════════════════════════════════════════════════════════════════════════
+🚗 AFD PARA VALIDACIÓN DE PLACAS VEHICULARES
+═══════════════════════════════════════════════════════════════════════════════════
+
+📋 DEFINICIÓN FORMAL DEL AFD PLACAS:
+
+AFD_Placas = (Σ, Q, q0, F, δ)
+
+Donde:
+• Σ = {'A','B','C',...,'Z','0','1','2',...,'9','-'} (Alfabeto de entrada)
+• Q = {q0, q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, qR} (Estados)
+• q0 = START (Estado inicial)
+• F = {q10} (Estados finales válidos)
+• δ = Función de transición (ver matriz abajo)
+
+🏷️ MAPEO DE ESTADOS:
+q0  = START        (Estado inicial)
+q1  = LETTER1      (Primera letra mayúscula)
+q2  = LETTER2      (Segunda letra mayúscula)  
+q3  = LETTER3      (Tercera letra mayúscula)
+q4  = DASH1        (Primer guion procesado)
+q5  = DIGIT1       (Primer dígito)
+q6  = DIGIT2       (Segundo dígito)
+q7  = DIGIT3       (Tercer dígito)
+q8  = DIGIT4       (Cuarto dígito)
+q9  = DASH2        (Segundo guion procesado)
+q10 = VEHICLE_TYPE (Letra tipo de vehículo) ★ FINAL
+qR  = REJECT       (Estado de rechazo)
+
+📊 MATRIZ DE TRANSICIONES δ(estado, símbolo):
+
+Estado\Entrada    | A-Z | 0-9 |  -  | otro
+==================|=====|=====|=====|=====
+q0 (START)        | q1  | qR  | qR  | qR
+q1 (LETTER1)      | q2  | qR  | qR  | qR
+q2 (LETTER2)      | q3  | qR  | qR  | qR
+q3 (LETTER3)      | qR  | qR  | q4  | qR
+q4 (DASH1)        | qR  | q5  | qR  | qR
+q5 (DIGIT1)       | qR  | q6  | qR  | qR
+q6 (DIGIT2)       | qR  | q7  | qR  | qR
+q7 (DIGIT3)       | qR  | q8  | qR  | qR
+q8 (DIGIT4)       | qR  | qR  | q9  | qR
+q9 (DASH2)        | q10 | qR  | qR  | qR
+q10 (VEHICLE_TYPE)| qR  | qR  | qR  | qR
+qR (REJECT)       | qR  | qR  | qR  | qR
+
+📝 NOTAS IMPORTANTES:
+★ = Estado de aceptación (F)
+A-Z = Cualquier letra mayúscula del alfabeto inglés
+0-9 = Cualquier dígito decimal
+otro = Cualquier carácter no definido en el alfabeto
+
+🔍 VALIDACIONES ESPECIALES:
+- Solo se aceptan letras MAYÚSCULAS (A-Z)
+- Los guiones deben estar exactamente en las posiciones 4 y 9
+- Secuencia exacta: 3 letras + guion + 4 dígitos + guion + 1 letra
+- No se permiten espacios ni caracteres especiales adicionales
+
+═══════════════════════════════════════════════════════════════════════════════════
+📊 ANÁLISIS COMPARATIVO DE AMBOS AFD
+═══════════════════════════════════════════════════════════════════════════════════
+
+🔢 ESTADÍSTICAS:
+
+AFD IPv4:
+- Estados totales: 18 (17 + 1 rechazo)
+- Estados finales: 3
+- Alfabeto: 11 símbolos
+- Complejidad: Alta (validación numérica)
+
+AFD Placas:
+- Estados totales: 12 (11 + 1 rechazo)
+- Estados finales: 1
+- Alfabeto: 37 símbolos
+- Complejidad: Media (secuencial)
+
+🎯 CARACTERÍSTICAS COMPARTIDAS:
+✓ Deterministas (cada entrada tiene una única transición)
+✓ Sin memoria adicional (no usan pilas)
+✓ Estado de rechazo único (simplifica implementación)
+✓ Validación en tiempo lineal O(n)
+✓ Detección exacta de posición de error
+
+═══════════════════════════════════════════════════════════════════════════════════
+🧪 EJEMPLOS DE PROCESAMIENTO
+═══════════════════════════════════════════════════════════════════════════════════
+
+🌐 EJEMPLO IPv4 VÁLIDA: "192.168.1.1"
+Secuencia de estados: q0 → q1 → q2 → q3 → q4 → q5 → q6 → q7 → q8 → q9 → q10 → q11 → q12 → q13 → q14 ✓
+
+🌐 EJEMPLO IPv4 INVÁLIDA: "192.168.1.256"
+Secuencia de estados: q0 → q1 → q2 → q3 → q4 → q5 → q6 → q7 → q8 → q9 → q10 → q11 → q12 → q13 → q14 → qR ✗
+Error: En posición 11, carácter '6' causa que "256" > 255
+
+🚗 EJEMPLO PLACA VÁLIDA: "ABC-1234-M"
+Secuencia de estados: q0 → q1 → q2 → q3 → q4 → q5 → q6 → q7 → q8 → q9 → q10 ✓
+
+🚗 EJEMPLO PLACA INVÁLIDA: "abc-1234-M"
+Secuencia de estados: q0 → qR ✗
+Error: En posición 1, carácter 'a' no es letra mayúscula
+
+═══════════════════════════════════════════════════════════════════════════════════
+🎓 PROPIEDADES TEÓRICAS
+═══════════════════════════════════════════════════════════════════════════════════
+
+🔍 PROPIEDADES DE LOS AFD IMPLEMENTADOS:
+
+1. DETERMINISMO:
+   - Cada par (estado, símbolo) tiene exactamente una transición
+   - No hay ε-transiciones (transiciones vacías)
+   - Comportamiento completamente predecible
+
+2. COMPLETITUD:
+   - Función de transición definida para todos los casos
+   - Estado de rechazo maneja entradas no válidas
+   - No hay estados indefinidos
+
+3. MINIMALIDAD:
+   - Cada estado tiene un propósito específico
+   - No hay estados redundantes o inalcanzables
+   - Optimizados para la validación específica
+
+4. CORRECTITUD:
+   - Acepta exactamente el lenguaje deseado
+   - Rechaza todas las cadenas no válidas
+   - Detección precisa de errores
+
+═══════════════════════════════════════════════════════════════════════════════════
+📝 IMPLEMENTACIÓN Y USO
+═══════════════════════════════════════════════════════════════════════════════════
+
+🛠️ ARCHIVOS RELACIONADOS:
+- ipv4.js: Implementación del AFD IPv4
+- placas.js: Implementación del AFD Placas
+- app.js: Interfaz web y manejo de archivos
+- index.html: Estructura de la aplicación web
+- test_ipv4.txt: Casos de prueba para IPv4
+- test_placas.txt: Casos de prueba para placas
+
+💻 MODO DE USO:
+1. Abrir index.html en navegador
+2. Seleccionar pestaña correspondiente
+3. Cargar archivo .txt con datos
+4. Procesar y ver resultados detallados
+
+═══════════════════════════════════════════════════════════════════════════════════
+👩‍💻 INFORMACIÓN DEL PROYECTO
+═══════════════════════════════════════════════════════════════════════════════════
+
+🎓 Proyecto Académico: Autómatas y Lenguajes Formales
+📅 Fecha de creación: Junio 2025
+💻 Tecnología: JavaScript, HTML5, CSS3
+🌐 Plataforma: Live Server / Navegador Web
+📖 Documentación: ManualUsuario.md
+
+✨ Creado con amor para demostrar la elegancia y poder de los Autómatas Finitos ✨
