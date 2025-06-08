@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validador de Autómatas Finitos</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🤖 Validador de Autómatas Finitos Deterministas</h1>
+            <p>Validación de direcciones IPv4 y placas vehiculares mediante AFD</p>
+        </header>
+
+        <main class="main-content">
+            <div class="tabs">
+                <input type="radio" id="tab-ipv4" name="tab-group" checked>
+                <input type="radio" id="tab-placa" name="tab-group">
+                
+                <div class="tab-labels">
+                    <label for="tab-ipv4" class="tab-label">
+                        <span class="tab-icon">🌐</span>
+                        Validador IPv4
+                    </label>
+                    <label for="tab-placa" class="tab-label">
+                        <span class="tab-icon">🚗</span>
+                        Validador Placas
+                    </label>
+                </div>
+
+                <div class="tab-content">
+                    <!-- Panel IPv4 -->
+                    <div class="tab-panel" id="panel-ipv4">
+                        <section class="validator-section">
+                            <h2>Validador de Direcciones IPv4</h2>
+                            
+                            <div class="info-section">
+                                <div class="format-info">
+                                    <h3>📋 Formato esperado:</h3>
+                                    <p><strong>d.d.d.d</strong> (cada d es entre 0-255)</p>
+                                    <div class="example">
+                                        <span class="label">Ejemplo válido:</span>
+                                        <code>192.168.100.1</code>
+                                    </div>
+                                </div>
+                                
+                                <div class="rules-info">
+                                    <h3>📜 Reglas del AFD:</h3>
+                                    <ul>
+                                        <li>4 octetos separados por punto (.)</li>
+                                        <li>Cada octeto: 1-3 dígitos (0-255)</li>
+                                        <li>No ceros a la izquierda (excepto "0")</li>
+                                        <li>Validación sin memoria adicional</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="input-section">
+                                <h3>📁 Cargar archivo de prueba</h3>
+                                <div class="file-input-group">
+                                    <label for="file-ipv4" class="file-label">
+                                        <span class="file-icon">📄</span>
+                                        Seleccionar archivo .txt
+                                    </label>
+                                    <input type="file" id="file-ipv4" accept=".txt" class="file-input">
+                                    <div class="file-info">
+                                        <span class="file-name" id="filename-ipv4">Ningún archivo seleccionado</span>
+                                        <button type="button" id="process-ipv4" class="process-btn" disabled>
+                                            Procesar Archivo
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="results-section">
+                                <div class="result-box">
+                                    <h4>📊 Resultados de Validación</h4>
+                                    <div class="status-indicator" id="status-ipv4">
+                                        <span class="status-text">⏳ Esperando archivo...</span>
+                                    </div>
+                                    <div class="summary-stats" id="summary-ipv4" style="display: none;">
+                                        <div class="stat-item">
+                                            <span class="stat-label">Total líneas:</span>
+                                            <span class="stat-value" id="total-ipv4">0</span>
+                                        </div>
+                                        <div class="stat-item">
+                                            <span class="stat-label">Válidas:</span>
+                                            <span class="stat-value valid" id="valid-ipv4">0</span>
+                                        </div>
+                                        <div class="stat-item">
+                                            <span class="stat-label">Inválidas:</span>
+                                            <span class="stat-value invalid" id="invalid-ipv4">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="error-box">
+                                    <h4>🚨 Detalles de Errores</h4>
+                                    <div class="error-content" id="errors-ipv4">
+                                        <div class="error-placeholder">
+                                            <p>📍 <strong>Número de línea:</strong> -</p>
+                                            <p>🔤 <strong>Carácter de falla:</strong> -</p>
+                                            <p>❌ <strong>Causa del error:</strong> -</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="detailed-results" id="detailed-ipv4" style="display: none;">
+                                <h4>📋 Resultados Detallados</h4>
+                                <div class="results-list"></div>
+                            </div>
+                        </section>
+                    </div>
+
+                    <!-- Panel Placas -->
+                    <div class="tab-panel" id="panel-placa">
+                        <section class="validator-section">
+                            <h2>Validador de Placas Vehiculares</h2>
+                            
+                            <div class="info-section">
+                                <div class="format-info">
+                                    <h3>📋 Formato esperado:</h3>
+                                    <p><strong>ABC-1234-Q</strong> (3 letras, guion, 4 dígitos, guion, 1 letra)</p>
+                                    <div class="example">
+                                        <span class="label">Ejemplo válido:</span>
+                                        <code>PQR-1298-M</code>
+                                    </div>
+                                </div>
+                                
+                                <div class="rules-info">
+                                    <h3>📜 Reglas del AFD:</h3>
+                                    <ul>
+                                        <li>3 letras mayúsculas iniciales</li>
+                                        <li>Primer guion (-)</li>
+                                        <li>4 dígitos consecutivos</li>
+                                        <li>Segundo guion (-)</li>
+                                        <li>1 letra mayúscula (tipo vehículo)</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="input-section">
+                                <h3>📁 Cargar archivo de prueba</h3>
+                                <div class="file-input-group">
+                                    <label for="file-placa" class="file-label">
+                                        <span class="file-icon">📄</span>
+                                        Seleccionar archivo .txt
+                                    </label>
+                                    <input type="file" id="file-placa" accept=".txt" class="file-input">
+                                    <div class="file-info">
+                                        <span class="file-name" id="filename-placa">Ningún archivo seleccionado</span>
+                                        <button type="button" id="process-placa" class="process-btn" disabled>
+                                            Procesar Archivo
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="results-section">
+                                <div class="result-box">
+                                    <h4>📊 Resultados de Validación</h4>
+                                    <div class="status-indicator" id="status-placa">
+                                        <span class="status-text">⏳ Esperando archivo...</span>
+                                    </div>
+                                    <div class="summary-stats" id="summary-placa" style="display: none;">
+                                        <div class="stat-item">
+                                            <span class="stat-label">Total líneas:</span>
+                                            <span class="stat-value" id="total-placa">0</span>
+                                        </div>
+                                        <div class="stat-item">
+                                            <span class="stat-label">Válidas:</span>
+                                            <span class="stat-value valid" id="valid-placa">0</span>
+                                        </div>
+                                        <div class="stat-item">
+                                            <span class="stat-label">Inválidas:</span>
+                                            <span class="stat-value invalid" id="invalid-placa">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="error-box">
+                                    <h4>🚨 Detalles de Errores</h4>
+                                    <div class="error-content" id="errors-placa">
+                                        <div class="error-placeholder">
+                                            <p>📍 <strong>Número de línea:</strong> -</p>
+                                            <p>🔤 <strong>Carácter de falla:</strong> -</p>
+                                            <p>❌ <strong>Causa del error:</strong> -</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="detailed-results" id="detailed-placa" style="display: none;">
+                                <h4>📋 Resultados Detallados</h4>
+                                <div class="results-list"></div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>🎓 Proyecto Académico - Autómatas Finitos Deterministas</p>
+            <p><small>Procesamiento de archivos .txt con validación rigurosa sin memoria adicional</small></p>
+        </footer>
+    </div>
+
+    <!-- Scripts externos para funcionalidad -->
+    <script src="ipv4.js"></script>
+    <script src="placas.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
